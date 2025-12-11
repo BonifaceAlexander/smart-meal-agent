@@ -15,3 +15,5 @@ def test_recommend_defaults():
     r = client.post('/recommend', json=payload)
     assert r.status_code == 200
     assert 'recommendations' in r.json()
+
+
