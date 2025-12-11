@@ -1,4 +1,4 @@
-# smart-meal-agent (v2) — AI Meal Recommender & Ordering Assistant
+# smart-meal-agent  — AI Meal Recommender & Ordering Assistant
 
 ## What’s included
 - FastAPI backend (`app/`) with orchestrator, MCP mock adapter, and vector-index placeholder.
