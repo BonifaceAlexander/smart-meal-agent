@@ -7,6 +7,7 @@ from app.orchestrator import Orchestrator
 app = FastAPI(title="smart-meal-agent")
 orchestrator = Orchestrator()
 
+
 class Preference(BaseModel):
     budget_cents: Optional[int] = None
     max_calories: Optional[int] = None
@@ -14,10 +15,12 @@ class Preference(BaseModel):
     time_minutes: Optional[int] = None
     dietary_restrictions: Optional[List[str]] = None
 
+
 class RecommendRequest(BaseModel):
     user_id: int
     pref: Preference
     limit: int = 5
+
 
 class OrderRequest(BaseModel):
     user_id: int
@@ -26,14 +29,19 @@ class OrderRequest(BaseModel):
     items: List[dict]
     address: dict
 
+
 @app.get("/")
 def root():
-    return {"status":"ok","service":"smart-meal-agent"}
+    return {"status": "ok", "service": "smart-meal-agent"}
+
 
 @app.post("/recommend")
 async def recommend(req: RecommendRequest):
-    recs = orchestrator.recommend_meals(user_id=req.user_id, pref=req.pref, limit=req.limit)
+    recs = orchestrator.recommend_meals(
+        user_id=req.user_id, pref=req.pref, limit=req.limit
+    )
     return recs
+
 
 @app.post("/order")
 async def order(req: OrderRequest, background_tasks: BackgroundTasks):
@@ -43,13 +51,14 @@ async def order(req: OrderRequest, background_tasks: BackgroundTasks):
             provider=req.provider,
             restaurant_id=req.restaurant_id,
             items=req.items,
-            address=req.address
+            address=req.address,
         )
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
     background_tasks.add_task(orchestrator.post_order_tasks, order_info)
     return order_info
+
 
 if __name__ == "__main__":
     uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
