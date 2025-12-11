@@ -11,7 +11,7 @@ def test_root():
 
 
 def test_recommend_defaults():
-    payload = {'user_id':1, 'pref':{}}
+    payload = {'user_id': 1, 'pref': {}}
     r = client.post('/recommend', json=payload)
     assert r.status_code == 200
     assert 'recommendations' in r.json()
